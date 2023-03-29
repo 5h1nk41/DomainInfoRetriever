@@ -90,10 +90,15 @@ def get_gpt3_summary(whois_raw, dns_info):
     formatted_dns = "\n".join([f"{key}: {value}" for key, value in dns_info.items()])
 
     prompt = (
-        f"ドメインのWHOISステータスとDNS情報の要約と解説を日本語で提供してください。\n\n"
-        f"WHOISステータス:\n{whois_raw}\n\n"
-        f"DNS情報:\n{formatted_dns}\n\n"
+    f"ドメインのWHOISステータスとDNS情報の要約と解説を日本語で提供してください。前置きは不要です。\n\n"
+    f"WHOISステータス:\n{whois_raw}\n\n"
+    f"DNS情報:\n{formatted_dns}\n\n"
+    f"WHOISステータスに基づいて、ドメインの具体的な状態を説明してください。\n\n"
+    f"statusに関しては、より詳しく説明してください。\n\n"
+    f"DNS情報に基づいて、読み取れる情報を端的に説明してください。\n\n"
+    f"必要に応じてテキストを構造化するなど、視認性を意識してください。"
     )
+
 
     response = openai.Completion.create(
         engine="text-davinci-003",
@@ -101,7 +106,7 @@ def get_gpt3_summary(whois_raw, dns_info):
         max_tokens=1000,
         n=1,
         stop=None,
-        temperature=0.5,
+        temperature=0.3,
     )
 
     return response.choices[0].text.strip()
@@ -130,4 +135,16 @@ if domain:
     st.write(dns_info)
 
     st.header("Summary and Explanation")
-    st.markdown(f"{summary}")
+
+    # CSS
+    st.markdown("""
+    <style>
+    .summary-box {
+        background-color: #808080;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown(f'<div class="summary-box">{summary}</div>', unsafe_allow_html=True)
