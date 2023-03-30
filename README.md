@@ -15,7 +15,7 @@ git clone https://github.com/5h1nk41/DomainInfoRetriever.git
 
 2.Change to the project directory:
 ```bash
-cd domain-information-retriever
+cd DomainInfoRetriever
 ```
 
 3.Install the required dependencies:
