@@ -1,13 +1,13 @@
 import streamlit as st
 import dns.resolver
 import requests
-import openai
+# import openai
 import pandas as pd
 import os
 import re
 
 # GPT-3 APIキーを設定します。環境変数から取得してください。
-openai.api_key = os.environ["OPENAI_API_KEY"]
+# openai.api_key = os.environ["OPENAI_API_KEY"]
 
 # WHOIS情報の取得
 @st.cache_data
@@ -83,33 +83,31 @@ def get_dns_info(domain):
 
     return dns_info
 
-
 # GPT-3を使って情報を解説する
-@st.cache_data
-def get_gpt3_summary(whois_raw, dns_info):
-    formatted_dns = "\n".join([f"{key}: {value}" for key, value in dns_info.items()])
-
-    prompt = (
-    f"ドメインのWHOISステータスとDNS情報の要約と解説を日本語で提供してください。前置きは不要です。\n\n"
-    f"WHOISステータス:\n{whois_raw}\n\n"
-    f"DNS情報:\n{formatted_dns}\n\n"
-    f"WHOISステータスに基づいて、ドメインの具体的な状態を説明してください。\n\n"
-    f"statusに関しては、より詳しく説明してください。\n\n"
-    f"DNS情報に基づいて、読み取れる情報を端的に説明してください。\n\n"
-    f"必要に応じてテキストを構造化するなど、視認性を意識してください。"
-    )
-
-
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=1000,
-        n=1,
-        stop=None,
-        temperature=0.3,
-    )
-
-    return response.choices[0].text.strip()
+# @st.cache_data
+# def get_gpt3_summary(whois_raw, dns_info):
+#     formatted_dns = "\\n".join([f"{key}: {value}" for key, value in dns_info.items()])
+#
+#     prompt = (
+#     f"ドメインのWHOISステータスとDNS情報の要約と解説を日本語で提供してください。前置きは不要です。\\n\\n"
+#     f"WHOISステータス:\\n{whois_raw}\\n\\n"
+#     f"DNS情報:\\n{formatted_dns}\\n\\n"
+#     f"WHOISステータスに基づいて、ドメインの具体的な状態を説明してください。\\n\\n"
+#     f"statusに関しては、より詳しく説明してください。\\n\\n"
+#     f"DNS情報に基づいて、読み取れる情報を端的に説明してください。\\n\\n"
+#     f"必要に応じてテキストを構造化するなど、視認性を意識してください。"
+#     )
+#
+#     response = openai.Completion.create(
+#         engine="text-davinci-003",
+#         prompt=prompt,
+#         max_tokens=1000,
+#         n=1,
+#         stop=None,
+#         temperature=0.3,
+#     )
+#
+#     return response.choices[0].text.strip()
 
 # メイン
 st.title("Domain Information Retriever")
@@ -125,8 +123,8 @@ if domain:
     with st.spinner("Retrieving DNS information..."):
         dns_info = get_dns_info(domain)
 
-    with st.spinner("Generating summary and explanation..."):
-        summary = get_gpt3_summary(whois_status_df.to_string(index=False, header=False), dns_info)
+    # with st.spinner("Generating summary and explanation..."):
+    #     summary = get_gpt3_summary(whois_status_df.to_string(index=False, header=False), dns_info)
 
     st.header("WHOIS Status")
     st.write(whois_status_df)
@@ -134,17 +132,17 @@ if domain:
     st.header("DNS Information")
     st.write(dns_info)
 
-    st.header("Summary and Explanation")
+    # st.header("Summary and Explanation")
 
     # CSS
-    st.markdown("""
-    <style>
-    .summary-box {
-        background-color: #808080;
-        padding: 10px;
-        border-radius: 5px;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+    # st.markdown("""
+    # <style>
+    # .summary-box {
+    #     background-color: #808080;
+    #     padding: 10px;
+    #     border-radius: 5px;
+    # }
+    # </style>
+    # """, unsafe_allow_html=True)
 
-    st.markdown(f'<div class="summary-box">{summary}</div>', unsafe_allow_html=True)
+    # st.markdown(f'<div class="summary-box">{summary}</div>', unsafe_allow_html=True)
